@@ -1,0 +1,20 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class ApiService {
+  static const String baseUrl = 'https://yourserver.com';
+
+  static Future<Map<String, dynamic>?> postRequest(String endpoint, Map<String, dynamic> data) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl$endpoint'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return null;
+    }
+  }
+}

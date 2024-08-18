@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/authentication_service.dart';
+import '../widgets/biometric_verification.dart';
+
+class LogoutScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final aadhaarId = Provider.of<AuthenticationService>(context).userSession?.aadhaarId ?? '';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Logout'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Goodbye, $aadhaarId'),
+            SizedBox(height: 20),
+            BiometricVerification(
+              onVerified: () async {
+                bool success = await Provider.of<AuthenticationService>(context, listen: false)
+                    .logout();
+                if (success) {
+                  Navigator.pushReplacementNamed(context, '/login');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logout Failed')));
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
